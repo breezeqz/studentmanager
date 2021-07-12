@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<!-- 工具栏 -->
+<div id="toolbar">
+
+  <div th:if="${session.usertype == '1' || session.usertype == '3'}" style="float: left;">
+    <!--链接按钮-->
+    <a id="add" href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true">添加</a>
+  </div>
+  <!--分割线-->
+  <div th:if="${session.usertype == '1' || session.usertype == '3'}" style="float: left;" class="datagrid-btn-separator"></div>
+
+  <div style="float: left;">
+    <a id="edit" href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true">修改</a>
+  </div>
+  <!--分割线-->
+  <div style="float: left;" class="datagrid-btn-separator"></div>
+
+  <div th:if="${session.usertype == '1' || session.usertype == '3'}" style="float: left;">
+    <a id="delete" href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-some-delete',plain:true">删除</a>
+  </div>
+
+  <div style="float: left;margin-top:4px;" class="datagrid-btn-separator" >&nbsp;&nbsp;姓名：<input id="search_student_name" class="easyui-textbox" name="search_student_name" /></div>
+
+  <div style="margin-left: 10px;margin-top:4px;" >班级：<input id="clazzList" class="easyui-textbox" name="clazz" />
+    <!--		javascript:; 表示什么都不执行，这样点击时就没有任何反应。-->
+    <a id="search-btn" href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-search',plain:true">搜索</a>
+  </div>
+
+</div>
+
+<!-- 添加学生的窗口 -->
+<div id="addDialog" style="padding: 10px">
+  <!--	<div style="float: right; margin: 20px 20px 0 0; width: 200px; border: 1px solid #EBF3FF" id="photo">-->
+  <!--		<img alt="照片" style="max-width: 200px; max-height: 400px;" title="照片" src="PhotoServlet?method=getPhoto" />-->
+  <!--	</div>-->
+  <!--	<div style="float: right; margin: 20px 20px 0 0; width: 200px; border: 1px solid #EBF3FF">-->
+  <!--		<img id="edit_photo" alt="照片" style="max-width: 200px; max-height: 400px;" title="照片" src="" />-->
+  <!--		<form id="uploadForm" method="post" enctype="multipart/form-data" action="PhotoServlet?method=SetPhoto" target="photo_target">-->
+  <!--			&lt;!&ndash; StudentServlet?method=SetPhoto &ndash;&gt;-->
+  <!--			<input type="hidden" name="sid" id="set-photo-id">-->
+  <!--			<input class="easyui-filebox" name="photo" data-options="prompt:'选择照片'" style="width:200px;">-->
+  <!--			<input id="upload-photo-btn" onClick="uploadPhoto()" class="easyui-linkbutton" style="width: 50px; height: 24px;" type="button" value="上传"/>-->
+  <!--		</form>-->
+  <!--	</div>-->
+  <form id="addForm" method="post" enctype="multipart/form-data">
+    <table cellpadding="8" >
+
+      <tr>
+        <td>姓名:</td>
+        <td><input id="add_name" style="width: 200px; height: 30px;" class="easyui-textbox" type="text" name="username" data-options="required:true, missingMessage:'请填写姓名'" /></td>
+      </tr>
+
+      <tr>
+        <td>密码:</td>
+        <td>
+          <input id="add_password"  class="easyui-textbox" style="width: 200px; height: 30px;" type="password" name="password" data-options="required:true, missingMessage:'请输入登录密码'" />
+        </td>
+      </tr>
+
+      <tr>
+        <td>性别:</td>
+        <td><select id="add_sex" class="easyui-combobox" data-options="editable: false, panelHeight: 50, width: 60, height: 30" name="sex"><option value="男">男</option><option value="女">女</option></select></td>
+      </tr>
+
+      <tr>
+        <td>电话:</td>
+        <td><input id="add_phone" style="width: 200px; height: 30px;" class="easyui-textbox" type="text" name="mobile" validType="mobile" /></td>
+      </tr>
+
+      <tr>
+        <td>QQ:</td>
+        <td><input id="add_qq" style="width: 200px; height: 30px;" class="easyui-textbox" type="text" name="qq" validType="number" /></td>
+      </tr>
+
+      <tr>
+        <td>班级:</td>
+        <td><input id="add_clazzList" style="width: 200px; height: 30px;" class="easyui-textbox" name="clazzId" /></td>
+      </tr>
+
+      <tr>
+        <td>相片:</td>
+<!--        onchange 事件会在域的内容改变时发生-->
+        <td><input onchange="filechange(event)" type="file" name="file" multiple></td>
+        <td><div id="imgDiv"></div></td>
+      </tr>
+
+    </table>
+  </form>
+</div>
+
+<!-- 修改学生的窗口 -->
+<div id="editDialog" style="padding: 10px">
+  <!--	<div style="float: right; margin: 20px 20px 0 0; width: 200px; border: 1px solid #EBF3FF">-->
+  <!--		<img id="edit_photo" alt="照片" style="max-width: 200px; max-height: 400px;" title="照片" src="" />-->
+  <!--		<form id="uploadForm" method="post" enctype="multipart/form-data" action="PhotoServlet?method=SetPhoto" target="photo_target">-->
+  <!--			&lt;!&ndash; StudentServlet?method=SetPhoto &ndash;&gt;-->
+  <!--			<input type="hidden" name="sid" id="set-photo-id">-->
+  <!--			<input class="easyui-filebox" name="photo" data-options="prompt:'选择照片'" style="width:200px;">-->
+  <!--			<input id="upload-photo-btn" onClick="uploadPhoto()" class="easyui-linkbutton" style="width: 50px; height: 24px;" type="button" value="上传"/>-->
+  <!--		</form>-->
+  <!--	</div>-->
+  <form id="editForm" method="post" enctype="multipart/form-data">
+    <input type="hidden" name="id" id="edit-id">
+    <table cellpadding="8" >
+      <tr>
+        <td>姓名:</td>
+        <td><input id="edit_name" style="width: 200px; height: 30px;" class="easyui-textbox" type="text" name="username" data-options="required:true, missingMessage:'请填写姓名'" /></td>
+      </tr>
+      <tr>
+        <td>性别:</td>
+        <td><select id="edit_sex" class="easyui-combobox" data-options="editable: false, panelHeight: 50, width: 60, height: 30" name="sex"><option value="男">男</option><option value="女">女</option></select></td>
+      </tr>
+      <tr>
+        <td>电话:</td>
+        <td><input id="edit_mobile" style="width: 200px; height: 30px;" class="easyui-textbox" type="text" name="mobile" validType="mobile" /></td>
+      </tr>
+      <tr>
+        <td>QQ:</td>
+        <td><input id="edit_qq" style="width: 200px; height: 30px;" class="easyui-textbox" type="text" name="qq" validType="number" /></td>
+      </tr>
+      <tr>
+        <td>班级:</td>
+        <td><input id="edit_clazzList" style="width: 200px; height: 30px;" class="easyui-textbox" name="clazzId" /></td>
+      </tr>
+      <tr>
+        <td>相片:</td>
+        <td><input onchange="filechange1(event)" type="file" name="file" multiple></td>
+        <td><div id="imgd"></div></td>
+      </tr>
+    </table>
+  </form>
+</div>
+
+<!-- 学生列表 -->
+<table id="dataList" cellspacing="0" cellpadding="0">
+
+</table>
+<!-- 提交表单处理iframe框架 -->
+<iframe id="photo_target" name="photo_target"></iframe>
+</body>
+</html>
